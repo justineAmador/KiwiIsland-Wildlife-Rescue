@@ -149,4 +149,14 @@ public class Position
         return newPosition;
     }
   
+    public boolean equals(Object obj){
+        if(!(obj instanceof Position))
+            return false;
+        return (row == ((Position)obj).row) && (column == ((Position)obj).column);  
+    }
+    
+    @Override
+    public String toString(){
+        return "Position("+row+","+column+")";
+    }
 }

@@ -19,7 +19,8 @@ public class BirdFood extends Item
       new TrueFalseQuestion("Kiwi birds are not in the threat of extinction", false),
       new TrueFalseQuestion("Kiwi birds are gentle birds and can’t defend themselves against predators", false),
       new TrueFalseQuestion("Kiwi birds are only found in New Zealand", true),
-      new TrueFalseQuestion("Kiwi birds have a strong cultural, spiritual and historic association with the Maori", true)
+      new TrueFalseQuestion("Kiwi birds have a strong cultural, spiritual and historic association with the Maori", true),
+      new TrueFalseQuestion("Kiwi birds can fly", false),
                           
     };
     private double energy;

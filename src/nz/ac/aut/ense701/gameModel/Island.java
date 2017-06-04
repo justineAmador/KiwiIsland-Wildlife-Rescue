@@ -315,6 +315,7 @@ public class Island
         {
             GridSquare gridSquare = getGridSquare(position);
             success = gridSquare.removeOccupant(occupant);
+            //System.out.println("occupant removed = " + success);
         }
         if ( success )
         {
