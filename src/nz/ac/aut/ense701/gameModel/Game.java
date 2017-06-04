@@ -46,6 +46,8 @@ public class Game
     private String playerMessage  = "";   
     private String playerName = "";
     
+    private boolean playerCanCollect;
+    
     /**
      * A new instance of Kiwi island that reads data from "IslandData.txt".
      */
@@ -54,6 +56,10 @@ public class Game
         eventListeners = new HashSet<GameEventListener>();
 
         createNewGame();
+    }
+    
+    public boolean canPlayerCollect(){
+        return playerCanCollect;
     }
     
     public void setName(String name){
@@ -152,10 +158,10 @@ public class Game
         if ( (newPosition != null) && newPosition.isOnIsland() )
         {
             // what is the terrain at that new position?
-            Terrain newTerrain = island.getTerrain(newPosition);
+            //Terrain newTerrain = island.getTerrain(newPosition);
             // can the playuer do it?
-            isMovePossible = player.hasStaminaToMove(newTerrain) && 
-                             player.isAlive();
+            //isMovePossible = player.hasStaminaToMove(newTerrain) && player.isAlive();
+            isMovePossible = true;
         }
         return isMovePossible;
     }
@@ -338,7 +344,7 @@ public class Game
             if(itemToUse instanceof BirdFood)
             {
                 //Bird Food can only be used if there is a bird to feed.
-                result = island.hasBird(player.getPosition());
+                result = island.hasBird(player.getPosition()) || island.hasKiwi(player.getPosition());
             } 
             if(itemToUse instanceof Tool)
             {
@@ -415,11 +421,11 @@ public class Game
     public boolean collectItem(Object item)
     {
         boolean success = (item instanceof Item) && (player.collect((Item)item));
+
         if(success)
         {
             // player has picked up an item: remove from grid square
             island.removeOccupant(player.getPosition(), (Item)item);
-            
             
             // everybody has to know about the change
             notifyGameEventListeners();
@@ -483,6 +489,8 @@ public class Game
             if (tool.isTrap()&& !tool.isBroken())
             {
                  success = trapPredator(); 
+                 if(success)
+                     player.drop(tool);
             }
             else if(tool.isScrewdriver())// Use screwdriver (to fix trap)
             {
@@ -543,7 +551,10 @@ public class Game
         boolean successfulMove = false;
         if ( isPlayerMovePossible(direction) )
         {
+            System.out.println("Player current position = " + player.getPosition().toString());
             Position newPosition = player.getPosition().getNewPosition(direction);
+            System.out.println("Player new position = " + newPosition.toString()+"\n");
+            
             Terrain  terrain     = island.getTerrain(newPosition);
 
             // move the player to new position
@@ -553,8 +564,8 @@ public class Game
             
             // Is there a hazard?
             checkForHazard();
-            player.setHappiness((totalPredators - predatorsTrapped), fedBirdCount);
-
+            //player.setHappiness((totalPredators - predatorsTrapped), fedBirdCount);
+            //player.setHappiness(fedBirdCount, predatorsTrapped);
             updateGameState();     
             
             boolean hasKiwi = island.hasKiwi(newPosition);
@@ -595,10 +606,7 @@ public class Game
                     int choice = JOptionPane.showConfirmDialog(null, q.getQuestion(), "Question", JOptionPane.YES_NO_OPTION);
                     boolean userAns = (choice == JOptionPane.YES_OPTION);
                     // check the answer
-                    boolean ansCorrect = q.checkAnswer(userAns);
-                    if(ansCorrect){
-                        player.collect(berry);
-                    }
+                    playerCanCollect = q.checkAnswer(userAns);
                 }
                 
                 // show pop if new position has a trap
@@ -611,10 +619,7 @@ public class Game
                     int choice = JOptionPane.showConfirmDialog(null, q.getQuestion(), "Question", JOptionPane.YES_NO_OPTION);
                     boolean userAns = (choice == JOptionPane.YES_OPTION);
                     // check the answer
-                    boolean ansCorrect = q.checkAnswer(userAns);
-                    if(ansCorrect){
-                        player.collect(trap);
-                    }
+                    playerCanCollect = q.checkAnswer(userAns);
                 }
             }
             
@@ -684,7 +689,7 @@ public class Game
             }
         }
         // notify listeners about changes
-            notifyGameEventListeners();
+        notifyGameEventListeners();
     }
     
        
@@ -740,6 +745,7 @@ public class Game
             //Predator has been trapped so remove
             island.removeOccupant(current, occupant); 
             predatorsTrapped++;
+            player.increaseHappiness(10);
         }
         
         return hadPredator;
