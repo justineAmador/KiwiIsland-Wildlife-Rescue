@@ -170,13 +170,70 @@ public class Island
             int i = 0;
             while ( i < occupants.length && !isBird ) {
                 Occupant occupant = occupants[i];
-                isBird = occupant instanceof Predator ;
+                isBird = occupant instanceof Bird ;
                 i++;
             }
     
                     
         }
         return isBird;
+    } 
+    
+    public boolean hasKiwi(Position position) 
+    {
+        GridSquare square = getGridSquare(position);
+        Occupant[] occupants = square.getOccupants();
+        boolean isKiwi = false;
+        if(occupants.length>0)
+        {
+            int i = 0;
+            while ( i < occupants.length && !isKiwi ) {
+                Occupant occupant = occupants[i];
+                isKiwi = occupant instanceof Kiwi ;
+                i++;
+            }
+    
+                    
+        }
+        return isKiwi;
+    } 
+    
+    public boolean hasBerry(Position position) 
+    {
+        GridSquare square = getGridSquare(position);
+        Occupant[] occupants = square.getOccupants();
+        boolean isBerry = false;
+        if(occupants.length>0)
+        {
+            int i = 0;
+            while ( i < occupants.length && !isBerry ) {
+                Occupant occupant = occupants[i];
+                isBerry = occupant instanceof BirdFood ;
+                i++;
+            }
+    
+                    
+        }
+        return isBerry;
+    } 
+    
+    public boolean hasTrap(Position position) 
+    {
+        GridSquare square = getGridSquare(position);
+        Occupant[] occupants = square.getOccupants();
+        boolean isTrap = false;
+        if(occupants.length>0)
+        {
+            int i = 0;
+            while ( i < occupants.length && !isTrap ) {
+                Occupant occupant = occupants[i];
+                isTrap = occupant instanceof Tool ;
+                i++;
+            }
+    
+                    
+        }
+        return isTrap;
     } 
     
     /************************************************************************************************************************
@@ -291,6 +348,82 @@ public class Island
         }
         return predator;
     }
+     
+     /**
+     * Get the first kiwi that is in this position
+     * @param position which position
+     * @return kiwi or null if there is not one here.
+     */
+     public Kiwi getKiwi(Position position) 
+    {
+        GridSquare square = getGridSquare(position);
+        Occupant[] occupants = square.getOccupants();
+        Kiwi kiwi = null;
+        if(occupants.length>0)
+        {
+            int i = 0;
+            while ( i < occupants.length && (kiwi == null )) {
+                Occupant occupant = occupants[i];
+                if(occupant instanceof Kiwi)
+                {
+                    kiwi = (Kiwi) occupant;
+                }
+                i++;
+            }       
+        }
+        return kiwi;
+    }
+     
+     /**
+     * Get the first berry that is in this position
+     * @param position which position
+     * @return berry or null if there is not one here.
+     */
+     public BirdFood getBerry(Position position) 
+    {
+        GridSquare square = getGridSquare(position);
+        Occupant[] occupants = square.getOccupants();
+        BirdFood berry = null;
+        if(occupants.length>0)
+        {
+            int i = 0;
+            while ( i < occupants.length && (berry == null )) {
+                Occupant occupant = occupants[i];
+                if(occupant instanceof BirdFood)
+                {
+                    berry = (BirdFood) occupant;
+                }
+                i++;
+            }       
+        }
+        return berry;
+    }
+     
+     /**
+     * Get the first trap that is in this position
+     * @param position which position
+     * @return trap or null if there is not one here.
+     */
+     public Tool getTrap(Position position) 
+    {
+        GridSquare square = getGridSquare(position);
+        Occupant[] occupants = square.getOccupants();
+        Tool trap = null;
+        if(occupants.length>0)
+        {
+            int i = 0;
+            while ( i < occupants.length && (trap == null )) {
+                Occupant occupant = occupants[i];
+                if(occupant instanceof Tool)
+                {
+                    trap = (Tool) occupant;
+                }
+                i++;
+            }       
+        }
+        return trap;
+    }
+     
     /**
      * Produces a textual representation of the island on the console.
      * This exists  for debugging purposes during early development.
