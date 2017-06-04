@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Scanner;
 import java.util.Set;
+import javax.swing.JOptionPane;
 
 /**
  * This is the class that knows the Kiwi Island game rules and state
@@ -34,6 +35,7 @@ public class Game
     private int fedBirdCount;
     private int totalPredators;
     private int totalBirds;
+    private int totalKiwis;
     private int predatorsTrapped;
     private Set<GameEventListener> eventListeners;
     
@@ -65,6 +67,7 @@ public class Game
     {
         totalPredators = 0;
         totalBirds = 0;
+        totalKiwis = 0;
         predatorsTrapped = 0;
         fedBirdCount = 0;
         initialiseIslandFromFile("IslandData.txt");
@@ -546,13 +549,76 @@ public class Game
             // move the player to new position
             player.moveToPosition(newPosition, terrain);
             island.updatePlayerPosition(player);
-            successfulMove = true;
-                    
+            successfulMove = true;                                
+            
             // Is there a hazard?
             checkForHazard();
             player.setHappiness((totalPredators - predatorsTrapped), fedBirdCount);
 
-            updateGameState();            
+            updateGameState();     
+            
+            boolean hasKiwi = island.hasKiwi(newPosition);
+            boolean hasPredator = island.hasPredator(newPosition);
+            boolean hasBerry = island.hasBerry(newPosition);
+            boolean hasTrap = island.hasTrap(newPosition);
+            
+            if(!(hasKiwi && hasPredator)){
+                // show pop if new position has a kiwi
+                if(island.hasKiwi(newPosition)){
+                    // get the kiwi at new position
+                    Kiwi kiwi = island.getKiwi(newPosition);
+                    // get the fact associated with this kiwi
+                    String fact = kiwi.getFact();
+                    // display the fact in popup
+                    JOptionPane.showMessageDialog(null, fact);
+                }
+
+                // show pop if new position has a predator
+                if(island.hasPredator(newPosition)){
+                    // get the predator at new position
+                    Predator predator = island.getPredator(newPosition);
+                    // get the fact associated with this predator
+                    String fact = predator.getFact();
+                    // display the fact in popup
+                    JOptionPane.showMessageDialog(null, fact);
+                }
+            }    
+            
+            if(!(hasBerry && hasTrap)){
+                // show pop if new position has a berry
+                if(island.hasBerry(newPosition)){
+                    // get the berry at new position
+                    BirdFood berry = island.getBerry(newPosition);
+                    // get the question associated with this berry
+                    TrueFalseQuestion q = berry.getQuestion();
+                    // ask the question with popup
+                    int choice = JOptionPane.showConfirmDialog(null, q.getQuestion(), "Question", JOptionPane.YES_NO_OPTION);
+                    boolean userAns = (choice == JOptionPane.YES_OPTION);
+                    // check the answer
+                    boolean ansCorrect = q.checkAnswer(userAns);
+                    if(ansCorrect){
+                        player.collect(berry);
+                    }
+                }
+                
+                // show pop if new position has a trap
+                if(island.hasTrap(newPosition)){
+                    // get the trap at new position
+                    Tool trap = island.getTrap(newPosition);
+                    // get the question associated with this trap
+                    TrueFalseQuestion q = trap.getQuestion();
+                    // ask the question with popup
+                    int choice = JOptionPane.showConfirmDialog(null, q.getQuestion(), "Question", JOptionPane.YES_NO_OPTION);
+                    boolean userAns = (choice == JOptionPane.YES_OPTION);
+                    // check the answer
+                    boolean ansCorrect = q.checkAnswer(userAns);
+                    if(ansCorrect){
+                        player.collect(trap);
+                    }
+                }
+            }
+            
+            
         }
         return successfulMove;
     }
@@ -864,8 +930,9 @@ public class Game
             }
             else if ( occType.equals("K") )
             {
-                occupant = new Bird(occPos, occName, occDesc);
-                totalBirds++;
+                //occupant = new Bird(occPos, occName, occDesc);
+                occupant = new Kiwi(occPos, occName, occDesc);
+                totalKiwis++;
             }
             else if ( occType.equals("P") )
             {
