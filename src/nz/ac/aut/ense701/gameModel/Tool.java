@@ -10,7 +10,18 @@ package nz.ac.aut.ense701.gameModel;
 
 public class Tool extends Item 
 {
+    private static final TrueFalseQuestion[] questions = 
+    {
+      new TrueFalseQuestion("The biggest threat to kiwi chicks is stoats, and to adult kiwi, dogs", true),
+      new TrueFalseQuestion("An average of 5 kiwi are killed by predators every week", false),
+      new TrueFalseQuestion("Rats eat native animals and their eggs", true),
+      new TrueFalseQuestion("DOC isn’t allowed to use Biodegradable 1080 poison drops to kill predators", false),
+      new TrueFalseQuestion("Stoats are responsible for approximately half of kiwi chick deaths", true)                          
+    };
+    
     private boolean broken;
+    private final int id;
+    private static int nextId = 0;
     
     /**
      * Construct a tool with known attributes.
@@ -24,7 +35,14 @@ public class Tool extends Item
     {
         super(pos, name, description, weight, size);
         this.broken = false;
+        id = nextId;
+        nextId++;
     }
+    
+    public TrueFalseQuestion getQuestion(){
+        return questions[id];
+    }
+    
     
     /**
      * Break the tool
