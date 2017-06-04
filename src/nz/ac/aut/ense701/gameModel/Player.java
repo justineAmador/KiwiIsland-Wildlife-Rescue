@@ -45,7 +45,8 @@ public class Player
        this.position          = position;
        this.name              = name;
        this.maxHappiness        = maxHappiness;
-       this.birdHappiness = maxHappiness/2;
+       //this.birdHappiness = maxHappiness/2;
+       this.birdHappiness = 0;
        this.maxBackpackWeight = maxBackpackWeight;
        this.maxBackpackSize = maxBackpackSize;
        this.alive = true;
@@ -115,8 +116,8 @@ public class Player
      * @param terrain the terrain to move in
      * @return the amount of stamina needed for the next move
      */
-    public void setHappiness(int fedBirds, int predators){
-        this.birdHappiness -= 1;//(happiness*(predators - fedBirds));
+    public void setHappiness(int fedBirds, int predatorsTrapped){
+        this.birdHappiness = fedBirds + predatorsTrapped;
         System.out.println("Happiness:" + this.birdHappiness);
     }
     
@@ -393,11 +394,11 @@ public class Player
             throw new IllegalArgumentException("Null parameters");
         }
         
-        if( hasStaminaToMove(terrain) )
-        {
+        //if( hasStaminaToMove(terrain) )
+        //{
             this.position = newPosition;
-            reduceStamina(getStaminaNeededToMove(terrain));
-            this.setHappiness(0, 0);
-        }
+            //reduceStamina(getStaminaNeededToMove(terrain));
+            //this.setHappiness(0, 0);
+        //}
     }
 }
