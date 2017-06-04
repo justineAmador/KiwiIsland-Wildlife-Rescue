@@ -3,12 +3,14 @@ package nz.ac.aut.ense701.gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.util.Random;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import java.awt.Graphics;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 import nz.ac.aut.ense701.gameModel.Game;
@@ -29,12 +31,15 @@ public class GridSquarePanel extends javax.swing.JPanel
      * @param row the row to represent
      * @param column the column to represent
      */
+    Random random;
+    
     public GridSquarePanel(Game game, int row, int column)
     {
         this.game   = game;
         this.row    = row;
         this.column = column;
         initComponents();
+        random = new Random();
     }
 
     // Reads the terrain type of the specific Grid square and then loads + adds the 
@@ -42,14 +47,41 @@ public class GridSquarePanel extends javax.swing.JPanel
     public boolean addTileImage(String terrain) throws IOException{
         boolean imageAdded = false;
         BufferedImage myPicture = null;
+        BufferedImage itemPicture = null;
+        BufferedImage mergedPicture = null;
         
         try{
+            //First determines the base image for the terrain.
             myPicture = ImageIO.read(new File((terrain) + ".jpg"));
         }
         finally{
+            //Then if there is an object on the map square(pest, Kiwi, Food, etc) it will add its
+            // corresponding image to the square.
             JLabel picLabel = new JLabel(new ImageIcon(myPicture));
-            this.add(picLabel);
+            String variant = Integer.toString(random.nextInt(3)+1); 
+            if(game.getOccupantStringRepresentation(row, column) != null )
+            {
+              try{
+            //Reads the item image by passing the item as the name of the png file.
+            itemPicture = ImageIO.read(new File((game.getOccupantStringRepresentation(row, column).toUpperCase())+ variant + ".png"));
+            mergedPicture = new BufferedImage(myPicture.getWidth(), myPicture.getHeight(), BufferedImage.TYPE_INT_ARGB);
+            
+            Graphics g = mergedPicture.getGraphics();
+            g.drawImage(myPicture, 0, 0, null);
+            g.drawImage(itemPicture, 30, 25, myPicture.getWidth()/2,myPicture.getHeight()/2,  null);
+            picLabel =new JLabel(new ImageIcon(mergedPicture));
+            
+            //JLabel itemLabel = new JLabel(new ImageIcon(itemPicture));
+           //this.add(itemLabel);
+            }catch(Exception e){};  
+            } 
+             this.add(picLabel);
+            
+            
+            
+           
             imageAdded = true;
+            
             //picLabel.setText(game.getOccupantStringRepresentation(row,column));
         }
         return imageAdded;
