@@ -75,7 +75,24 @@ public abstract class Occupant
     {
         return getName();
     }
-    
+
+    /*
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 47 * hash + (this.position != null ? this.position.hashCode() : 0);
+        return hash;
+    }
+    */
+    /*
+    @Override
+    public boolean equals(Object obj){
+        if(!(obj instanceof Occupant) && !(obj instanceof Item))
+            return false;
+        Occupant occ = (Occupant)obj;
+        return position.equals(occ.position) && name.equals(occ.name) && description.equals(occ.description);
+    }
+    */
     
     /**
      * Gets a string representation of the occupant.
