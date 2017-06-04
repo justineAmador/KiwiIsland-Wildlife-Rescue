@@ -88,6 +88,8 @@ public class GridSquare
     public String getOccupantStringRepresentation()
     {
         String result = "";
+        if(occupants.isEmpty())
+            return null;
         for(Occupant occupant : occupants)
         {
             result += occupant.getStringRepresentation();
